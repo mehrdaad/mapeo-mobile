@@ -16,6 +16,7 @@ import RightIcon from 'material-ui/lib/svg-icons/navigation/chevron-right'
 
 import { defineMessages, injectIntl, intlShape } from 'react-intl'
 import InjectWindowDimensions from '../hocs/inject_window_dimensions'
+import {reduxForm} from 'redux-form'
 
 const styles = {
   wrapper: {
@@ -142,6 +143,8 @@ function createSelector () {
     }
   }
 }
+
+
 
 export default compose(
   connect(createSelector()),
