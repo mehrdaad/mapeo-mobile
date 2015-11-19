@@ -14,9 +14,8 @@ import MediaIcon from 'material-ui/lib/svg-icons/image/photo-camera'
 import DetailsIcon from 'material-ui/lib/svg-icons/editor/mode-edit'
 import RightIcon from 'material-ui/lib/svg-icons/navigation/chevron-right'
 
-import { defineMessages, injectIntl, intlShape } from 'react-intl'
+import { defineMessages, injectIntl, intlShape, FormattedMessage } from 'react-intl'
 import InjectWindowDimensions from '../hocs/inject_window_dimensions'
-import {reduxForm} from 'redux-form'
 
 const styles = {
   wrapper: {
@@ -48,6 +47,18 @@ const messages = defineMessages({
   title_new: {
     id: 'observation_edit.title.new',
     defaultMessage: 'New Observation'
+  },
+  new_observation_location_geolocation_on: {
+    id: 'observation_edit.location.new.geolocation_on',
+    defaultMessage: 'We found a location. Care to edit it?'
+  },
+  new_observation_location_geolocation_off: {
+    id: 'observation_edit.location.new.geolocation_off',
+    defaultMessage: 'We didn\'t find your location. Please input it manually'
+  },
+  existing_observation_location_edit: {
+    id: 'observation_edit.location.existing.edit',
+    defaultMessage: 'Edit your location'
   }
 })
 
@@ -64,6 +75,7 @@ const ObservationEdit = ({
   id,
   observation,
   intl: {formatMessage},
+  location,
   windowWidth,
   windowHeight
 }) => {
@@ -72,9 +84,20 @@ const ObservationEdit = ({
     : formatMessage(messages.title_existing)
   const closeIcon = <IconButton onTouchTap={onClose}><CloseIcon /></IconButton>
 
-  const LocationText = (observation)
-    ? observation.gps.loc[0].toFixed(4) + ', ' + observation.gps.loc[1].toFixed(4)
-    : 'Waiting for location fix...'
+  // const LocationText = (observation)
+  //   ? observation.gps.loc[0].toFixed(4) + ', ' + observation.gps.loc[1].toFixed(4)
+  //   : 'Waiting for location fix...'
+
+  let LocationText
+  if (observation) {
+    LocationText = <FormattedMessage {...messages.existing_observation_location_edit} />
+  }
+  if (!observation && !location.error) {
+    LocationText = <FormattedMessage {...messages.new_observation_location_geolocation_on} />
+  }
+  if (!observation && location.error) {
+    LocationText = <FormattedMessage {...messages.new_observation_location_geolocation_off} />
+  }
 
   const wrapperStyle = {...styles.wrapper, height: windowHeight, width: windowWidth}
   return (
@@ -83,6 +106,7 @@ const ObservationEdit = ({
         title={title}
         iconElementLeft={closeIcon}
       />
+
       <List>
         <ListItem
           style={styles.listItem}
@@ -128,6 +152,7 @@ ObservationEdit.propTypes = {
   intl: intlShape.isRequired
 }
 
+// TODO This will get really, really weird if the store entity gets edited somewhere else in the middle of the edition. Hope memoization saves us all.
 function createSelector () {
   let cache = {}
   const empty = {}
@@ -138,13 +163,15 @@ function createSelector () {
     let observationJSON = cache.id === id ? cache.observationJSON
       : state.graph.entities[id].asJSON()
     cache = { id, observationJSON }
+    const location = state.location
     return {
-      observation: observationJSON
+      observation: observationJSON,
+      // TODO It's very likely I just destroyed the memoization here \o/
+      // This is just for development reasons
+      location: location
     }
   }
 }
-
-
 
 export default compose(
   connect(createSelector()),
