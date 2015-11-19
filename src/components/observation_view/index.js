@@ -173,8 +173,6 @@ function createSelector () {
   }
 }
 
-
-
 export default compose(
   connect(createSelector()),
   injectIntl
