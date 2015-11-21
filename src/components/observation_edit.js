@@ -15,11 +15,12 @@ import DetailsIcon from 'material-ui/lib/svg-icons/editor/mode-edit'
 import RightIcon from 'material-ui/lib/svg-icons/navigation/chevron-right'
 
 import { defineMessages, injectIntl, intlShape, FormattedMessage } from 'react-intl'
-import InjectWindowDimensions from '../hocs/inject_window_dimensions'
 
 const styles = {
   wrapper: {
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    width: '100%',
+    height: '100%'
   },
   listItem: {
     lineHeight: '40px'
@@ -76,8 +77,7 @@ const ObservationEdit = ({
   observation,
   intl: {formatMessage},
   location,
-  windowWidth,
-  windowHeight
+  intl: {formatMessage}
 }) => {
   const isNew = id === 'new'
   const title = isNew ? formatMessage(messages.title_new)
@@ -99,7 +99,7 @@ const ObservationEdit = ({
     LocationText = <FormattedMessage {...messages.new_observation_location_geolocation_off} />
   }
 
-  const wrapperStyle = {...styles.wrapper, height: windowHeight, width: windowWidth}
+  const wrapperStyle = {...styles.wrapper}
   return (
     <div style={wrapperStyle} onTouchMove={stopScreenScrolling}>
       <AppBar
@@ -175,6 +175,5 @@ function createSelector () {
 
 export default compose(
   connect(createSelector()),
-  InjectWindowDimensions,
   injectIntl
 )(ObservationEdit)
