@@ -22,7 +22,7 @@ const App = ({ children, geolocation, geolocationUpdate, history, items, locatio
   }
 
   function handleOpen (e, {id, type}) {
-    history.pushState(null, `/${type}/${id}`)
+    history.pushState(null, `/${type}/${id}`);
   }
 
   return (
