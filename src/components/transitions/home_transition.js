@@ -58,7 +58,7 @@ const HomeTransition = ({active, children, type}) => {
   )
 }
 
-HomeTransition.propTyps = {
+HomeTransition.propTypes = {
   /* Whether the transition is active or not */
   active: PropTypes.bool,
   children: PropTypes.element,
