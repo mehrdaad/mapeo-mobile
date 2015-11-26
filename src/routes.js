@@ -14,7 +14,7 @@ import {
 
 const routes = (
   <Router>
-    <Route path='/(:type)' component={App}>
+    <Route path='/' component={App}>
       <Route path='/observation/:id' component={ObservationView}>
         <Route path='location' component={Location} />
         <Route path='media' component={Media} />
