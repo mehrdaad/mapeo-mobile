@@ -12,7 +12,11 @@ import {
   EventEdit
 } from './components'
 
+// import createBrowserHistory from 'history/lib/createBrowserHistory'
+// let history = createBrowserHistory()
+
 const routes = (
+  // <Router history={history}>
   <Router>
     <Route path='/' component={App}>
       <Route path='/observation/:id' component={ObservationView}>
