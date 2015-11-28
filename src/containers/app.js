@@ -22,7 +22,7 @@ const App = ({ children, geolocation, geolocationUpdate, history, items, locatio
   }
 
   function handleOpen (e, {id, type}) {
-    history.pushState(null, `/${type}/${id}`);
+    history.pushState(null, `/${type}/${id}`)
   }
 
   return (
@@ -32,7 +32,7 @@ const App = ({ children, geolocation, geolocationUpdate, history, items, locatio
         <HomeView onOpen={handleOpen} {...{params, items, geolocation}} />
       </HomeTransition>
       <RouteTransition pathname={location.pathname} type={childRouteTransitionType}>
-        {children && React.cloneElement(children, {onClose: handleClose})}
+        {children && React.cloneElement(children, {onClose: handleClose, id: id, ...{params, items, geolocation}})}
       </RouteTransition>
     </div>
   )

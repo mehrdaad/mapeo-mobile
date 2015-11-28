@@ -13,14 +13,13 @@ import CategoryIcon from 'material-ui/lib/svg-icons/file/folder'
 import MediaIcon from 'material-ui/lib/svg-icons/image/photo-camera'
 import DetailsIcon from 'material-ui/lib/svg-icons/editor/mode-edit'
 import RightIcon from 'material-ui/lib/svg-icons/navigation/chevron-right'
-
 import { defineMessages, injectIntl, intlShape, FormattedMessage } from 'react-intl'
 
 const styles = {
   wrapper: {
     backgroundColor: 'white',
-    width: '100%',
-    height: '100%'
+    width: '100vw',
+    height: '100vh'
   },
   listItem: {
     lineHeight: '40px'
@@ -71,109 +70,107 @@ function stopScreenScrolling (e) {
   e.preventDefault()
 }
 
-const ObservationEdit = ({
+const ObservationView = ({
   onClose,
+  history,
   id,
   observation,
-  intl: {formatMessage},
   location,
-  intl: {formatMessage}
+  intl: {formatMessage},
+  type
 }) => {
-  const isNew = id === 'new'
-  const title = isNew ? formatMessage(messages.title_new)
-    : formatMessage(messages.title_existing)
-  const closeIcon = <IconButton onTouchTap={onClose}><CloseIcon /></IconButton>
+    const isNew = id === 'new'
+    const title = isNew ? formatMessage(messages.title_new)
+      : formatMessage(messages.title_existing)
+    const closeIcon = <IconButton onTouchTap={onClose}><CloseIcon /></IconButton>
 
-  // const LocationText = (observation)
-  //   ? observation.gps.loc[0].toFixed(4) + ', ' + observation.gps.loc[1].toFixed(4)
-  //   : 'Waiting for location fix...'
+    // const LocationText = (observation)
+    //   ? observation.gps.loc[0].toFixed(4) + ', ' + observation.gps.loc[1].toFixed(4)
+    //   : 'Waiting for location fix...'
 
-  let LocationText
-  if (observation) {
-    LocationText = <FormattedMessage {...messages.existing_observation_location_edit} />
-  }
-  if (!observation && !location.error) {
-    LocationText = <FormattedMessage {...messages.new_observation_location_geolocation_on} />
-  }
-  if (!observation && location.error) {
-    LocationText = <FormattedMessage {...messages.new_observation_location_geolocation_off} />
-  }
+    let LocationText
+    if (observation) {
+      LocationText = <FormattedMessage {...messages.existing_observation_location_edit} />
+    }
+    if (!observation && !geolocation.error) {
+      LocationText = <FormattedMessage {...messages.new_observation_location_geolocation_on} />
+    }
+    if (!observation && geolocation.error) {
+      LocationText = <FormattedMessage {...messages.new_observation_location_geolocation_off} />
+    }
 
-  const wrapperStyle = {...styles.wrapper}
-  return (
-    <div style={wrapperStyle} onTouchMove={stopScreenScrolling}>
-      <AppBar
-        title={title}
-        iconElementLeft={closeIcon}
-      />
+    const wrapperStyle = {...styles.wrapper}
 
-      <List>
-        <ListItem
-          style={styles.listItem}
-          primaryText={LocationText}
-          leftIcon={<LocationIcon style={styles.listIcon} />}
-          rightIcon={<RightIcon style={styles.listIcon} />}
+    const CategoryTouchTap = (e) => {
+      e.preventDefault()
+      history.pushState(null, '/' + type + '/' + id + '/category')
+    }
+    const DetailsTouchTap = (e) => {
+      e.preventDefault()
+      history.pushState(null, '/' + type + '/' + id + '/details')
+    }
+    const MediaTouchTap = (e) => {
+      e.preventDefault()
+      history.pushState(null, '/' + type + '/' + id + '/media')
+    }
+    return (
+      <div style={wrapperStyle} onTouchMove={stopScreenScrolling}>
+        <AppBar
+          title={title}
+          iconElementLeft={closeIcon}
         />
-        <ListDivider inset />
-        <ListItem
-          style={styles.listItem}
-          primaryText='Category'
-          leftIcon={<CategoryIcon style={styles.listIcon} />}
-          rightIcon={<RightIcon style={styles.listIcon} />}
-        />
-        <ListDivider inset />
-        <ListItem
-          style={styles.listItem}
-          primaryText='Add Photo...'
-          leftIcon={<MediaIcon style={styles.listIcon} />}
-          rightIcon={<RightIcon style={styles.listIcon} />}
-        />
-        <ListDivider inset />
-        <ListItem
-          style={styles.listItem}
-          primaryText='Details'
-          leftIcon={<DetailsIcon style={styles.listIcon} />}
-          rightIcon={<RightIcon style={styles.listIcon} />}
-        />
-        <ListDivider inset />
-      </List>
-      <RaisedButton primary label='SAVE' style={styles.saveButton} labelStyle={styles.saveButtonLabel} />
-    </div>
-  )
+
+        <List>
+          <ListItem
+            style={styles.listItem}
+            primaryText={LocationText}
+            leftIcon={<LocationIcon style={styles.listIcon} />}
+            rightIcon={<RightIcon style={styles.listIcon} />}
+          />
+          <ListDivider inset />
+          <ListItem
+            style={styles.listItem}
+            primaryText='Category'
+            leftIcon={<CategoryIcon style={styles.listIcon} />}
+            rightIcon={<RightIcon style={styles.listIcon} />}
+            onTouchTap={CategoryTouchTap}
+          />
+          <ListDivider inset />
+          <ListItem
+            style={styles.listItem}
+            primaryText='Add Photo...'
+            leftIcon={<MediaIcon style={styles.listIcon} />}
+            rightIcon={<RightIcon style={styles.listIcon} />}
+            onTouchTap={MediaTouchTap}
+          />
+          <ListDivider inset />
+          <ListItem
+            style={styles.listItem}
+            primaryText='Details'
+            leftIcon={<DetailsIcon style={styles.listIcon} />}
+            rightIcon={<RightIcon style={styles.listIcon} />}
+            onTouchTap={DetailsTouchTap}
+          />
+          <ListDivider inset />
+        </List>
+        <RaisedButton primary label='SAVE' style={styles.saveButton} labelStyle={styles.saveButtonLabel} />
+      </div>
+    )
 }
 
-ObservationEdit.propTypes = {
+ObservationView.propTypes = {
   onClose: PropTypes.func,
+  history: PropTypes.object,
   id: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.string
   ]).isRequired,
   observation: PropTypes.object,
-  intl: intlShape.isRequired
+  location: PropTypes.object,
+  intl: intlShape.isRequired,
+  type: PropTypes.string
 }
 
-// TODO This will get really, really weird if the store entity gets edited somewhere else in the middle of the edition. Hope memoization saves us all.
-function createSelector () {
-  let cache = {}
-  const empty = {}
-  return function select (state, {id} = {}) {
-    if (id === 'new') {
-      return empty
-    }
-    let observationJSON = cache.id === id ? cache.observationJSON
-      : state.graph.entities[id].asJSON()
-    cache = { id, observationJSON }
-    const location = state.location
-    return {
-      observation: observationJSON,
-      // TODO It's very likely I just destroyed the memoization here \o/
-      // This is just for development reasons
-      location: location
-    }
-  }
-}
+export default ObservationView
 
-export default compose(
-  connect(createSelector()),
-  injectIntl
-)(ObservationEdit)
+
