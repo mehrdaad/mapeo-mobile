@@ -10,7 +10,7 @@ class Observation extends React.Component {
     return {
       details: {
         category: null,
-        survey: new Date(Date.new()).toISOString()
+        survey: new Date(Date.now()).toISOString()
       },
       gps: {
         loc: this.props.location ? this.props.location : null
