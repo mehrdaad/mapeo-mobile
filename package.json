@@ -13,7 +13,8 @@
   "dependencies": {
     "@mapbox/react-native-mapbox-gl": "^6.0.2-rc1",
     "react": "16.0.0",
-    "react-native": "0.50.1",
+    "react-native": "0.51.0",
+    "react-native-navigation": "^1.1.348",
     "react-native-node": "^3.3.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2"
