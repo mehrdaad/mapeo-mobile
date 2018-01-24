@@ -22,21 +22,44 @@ import React from 'react';
 import RNNode from 'react-native-node';
 import { Provider } from 'react-redux';
 import { configureStore } from '@lib/store';
-import MapView from '@src/components/Views/MapView';
+import { Navigation } from 'react-native-navigation';
+import { registerViews } from '@src/components/Views';
+// import MapView from '@src/components/Views/MapView';
 import 'rxjs';
 
-export default class App extends React.PureComponent<null, null> {
-  componentDidMount() {
-    RNNode.start();
-  }
+// export default class App extends React.PureComponent<null, null> {
+//   componentDidMount() {
+//     RNNode.start();
+//   }
 
-  render() {
-    const store = configureStore();
+//   render() {
+//     const store = configureStore();
 
-    return (
-      <Provider store={store}>
-        <MapView />
-      </Provider>
-    );
-  }
-}
+//     return (
+//       <Provider store={store}>
+//         <MapView />
+//       </Provider>
+//     );
+//   }
+// }
+
+const store = configureStore();
+
+registerViews(store, Provider);
+
+const tabs = [{
+  label: 'Map',
+  screen: 'mapeoMobile.Map',
+  icon: require('./images/location-arrow.png'),
+  title: 'Map View',
+},
+{
+  label: 'Camera',
+  screen: 'mapeoMobile.Camera',
+  icon: require('./images/camera.png'),
+  title: 'Camera View',
+}];
+
+Navigation.startTabBasedApp({
+  tabs,
+});
